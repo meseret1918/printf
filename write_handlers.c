@@ -87,7 +87,7 @@ int write_number(int is_negative, int ind, char buffer[],
  * @padd: Pading char
  * @extra_c: Extra char
  *
- * Return: Number of printed chars
+ * Return: Number of printed char
  */
 int write_num(int ind, char buffer[],
 	int flags, int width, int prec,
