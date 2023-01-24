@@ -132,7 +132,7 @@ int print_reverse(va_list types, char buffer[],
 	return (count);
 }
 /**
- * print_rot13 - Print a string in rot13.
+ * print_rot13string - Print a string in rot13.
  * @types: Lista of arguments
  * @buffer: Buffer array to handle print
  * @flags:  Calculates active flags
