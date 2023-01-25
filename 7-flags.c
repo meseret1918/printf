@@ -1,4 +1,4 @@
-#include "meseret.h"
+#include "main.h"
 
 /**
  * get_flags - Calculates active flags
@@ -32,3 +32,4 @@ int get_flags(const char *format, int *i)
 
 	return (flags);
 }
+

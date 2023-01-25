@@ -1,9 +1,8 @@
-#include "meseret.h"
+#include "main.h"
 
 /************************* WRITE HANDLE *************************/
 /**
  * handle_write_char - Prints a string
- * to the stdout
  * @c: char types.
  * @buffer: Buffer array to handle print
  * @flags:  Calculates active flags.
