@@ -1,52 +1,41 @@
 #include "main.h"
 
 /**
- * handle_precision - Matches a precision modifier with
- *                    its corresponding value.
- * @args: A va_list of arguments.
- * @modifier: A pointer to a potential precision modifier.
- * @index: An index counter for the original format string.
+ * get_precision - Calculates the precision for printing
+ * @format: Formatted string in which to print the arguments
+ * @i: List of arguments to be printed.
+ * @list: list of arguments.
  *
- * Return: If a precision modifier is matched - its value.
- *         If the precision modifier is empty, zero, or negative - 0.
- *         Otherwise - -1.
+ * Return: Precision.
  */
-int handle_precision(va_list args, const char *modifier, char *index)
+int get_precision(const char *format, int *i, va_list list)
 {
-	int value = 0;
+	int curr_i = *i + 1;
+	int precision = -1;
 
-	if (*modifier != '.')
-		return (-1);
+	if (format[curr_i] != '.')
+		return (precision);
 
-	modifier++;
-	(*index)++;
+	precision = 0;
 
-	if ((*modifier <= '0' || *modifier > '9') &&
-	     *modifier != '*')
+	for (curr_i += 1; format[curr_i] != '\0'; curr_i++)
 	{
-		if (*modifier == '0')
-			(*index)++;
-		return (0);
-	}
-
-	while ((*modifier >= '0' && *modifier <= '9') ||
-	       (*modifier == '*'))
-	{
-		(*index)++;
-
-		if (*modifier == '*')
+		if (is_digit(format[curr_i]))
 		{
-			value = va_arg(args, int);
-			if (value <= 0)
-				return (0);
-			return (value);
+			precision *= 10;
+			precision += format[curr_i] - '0';
 		}
-
-		value *= 10;
-		value += (*modifier - '0');
-		modifier++;
+		else if (format[curr_i] == '*')
+		{
+			curr_i++;
+			precision = va_arg(list, int);
+			break;
+		}
+		else
+			break;
 	}
 
-	return (value);
-}
+	*i = curr_i - 1;
 
+	return (precision);
+}
