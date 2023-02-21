@@ -1,49 +1,84 @@
 #include "main.h"
-/**
- * handle_print - Prints an argument based on its type
- * @fmt: Formatted string in which to print the arguments.
- * @list: List of arguments to be printed.
- * @ind: ind.
- * @buffer: Buffer array to handle print.
- * @flags: Calculates active flags
- * @width: get width.
- * @precision: Precision specification
- * @size: Size specifier
- * Return: 1 or 2;
- */
-int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
-	int flags, int width, int precision, int size)
-{
-	int i, unknow_len = 0, printed_chars = -1;
-	fmt_t fmt_types[] = {
-		{'c', print_char}, {'s', print_string}, {'%', print_percent},
-		{'i', print_int}, {'d', print_int}, {'b', print_binary},
-		{'u', print_unsigned}, {'o', print_octal}, {'x', print_hexadecimal},
-		{'X', print_hexa_upper}, {'p', print_pointer}, {'S', print_non_printable},
-		{'r', print_reverse}, {'R', print_rot13string}, {'\0', NULL}
-	};
-	for (i = 0; fmt_types[i].fmt != '\0'; i++)
-		if (fmt[*ind] == fmt_types[i].fmt)
-			return (fmt_types[i].fn(list, buffer, flags, width, precision, size));
 
-	if (fmt_types[i].fmt == '\0')
+/**
+ * print_int - prints an integer
+ * @l: va_list of arguments from _printf
+ * @f: pointer to the struct flags determining
+ * if a flag is passed to _printf
+ * Return: number of char printed
+ */
+int print_int(va_list l, flags_t *f)
+{
+	int n = va_arg(l, int);
+	int res = count_digit(n);
+
+	if (f->space == 1 && f->plus == 0 && n >= 0)
+		res += _putchar(' ');
+	if (f->plus == 1 && n >= 0)
+		res += _putchar('+');
+	if (n <= 0)
+		res++;
+	print_number(n);
+	return (res);
+}
+
+/**
+ * print_unsigned - prints an unsigned integer
+ * @l: va_list of arguments from _printf
+ * @f: pointer to the struct flags determining
+ * if a flag is passed to _printf
+ * Return: number of char printed
+ */
+int print_unsigned(va_list l, flags_t *f)
+{
+	unsigned int u = va_arg(l, unsigned int);
+	char *str = convert(u, 10, 0);
+
+	(void)f;
+	return (_puts(str));
+}
+
+/**
+ * print_number - helper function that loops through
+ * an integer and prints all its digits
+ * @n: integer to be printed
+ */
+void print_number(int n)
+{
+	unsigned int n1;
+
+	if (n < 0)
 	{
-		if (fmt[*ind] == '\0')
-			return (-1);
-		unknow_len += write(1, "%%", 1);
-		if (fmt[*ind - 1] == ' ')
-			unknow_len += write(1, " ", 1);
-		else if (width)
-		{
-			--(*ind);
-			while (fmt[*ind] != ' ' && fmt[*ind] != '%')
-				--(*ind);
-			if (fmt[*ind] == ' ')
-				--(*ind);
-			return (1);
-		}
-		unknow_len += write(1, &fmt[*ind], 1);
-		return (unknow_len);
+		_putchar('-');
+		n1 = -n;
 	}
-	return (printed_chars);
+	else
+		n1 = n;
+
+	if (n1 / 10)
+		print_number(n1 / 10);
+	_putchar((n1 % 10) + '0');
+}
+
+/**
+ * count_digit - returns the number of digits in an integer
+ * for _printf
+ * @i: integer to evaluate
+ * Return: number of digits
+ */
+int count_digit(int i)
+{
+	unsigned int d = 0;
+	unsigned int u;
+
+	if (i < 0)
+		u = i * -1;
+	else
+		u = i;
+	while (u != 0)
+	{
+		u /= 10;
+		d++;
+	}
+	return (d);
 }
